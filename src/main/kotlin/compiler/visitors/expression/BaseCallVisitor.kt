@@ -15,8 +15,9 @@ interface BaseCallVisitor : MiniKotlinVisitor<String>, CompilerContext {
         if(name == "println") name = "Prelude.println"
         functionCall.append(name)
         functionCall.append("(")
-        functionCall.append(visit(ctx.argumentList()))
-
+        if(ctx.argumentList() != null) {
+            functionCall.append(visit(ctx.argumentList()))
+        }
         val resultName = generateResultName()
 
         functionCall.append("($resultName) -> {\n")

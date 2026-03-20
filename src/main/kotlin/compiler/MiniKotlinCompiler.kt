@@ -128,6 +128,10 @@ class MiniKotlinCompiler : MiniKotlinBaseVisitor<String>(),
         return super<ExpressionVisitor>.visitIdentifierExpr(ctx)
     }
 
+    override fun visitParenExpr(ctx: MiniKotlinParser.ParenExprContext) : String {
+        return super<ExpressionVisitor>.visitParenExpr(ctx)
+    }
+
     override fun visitIntLiteral(ctx: MiniKotlinParser.IntLiteralContext): String {
         return super<ExpressionVisitor>.visitIntLiteral(ctx)
     }
