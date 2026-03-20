@@ -65,4 +65,30 @@ class MiniKotlinCompilerTest {
         assertTrue(output.contains("120"), "Expected output to contain factorial result 120, but got: $output")
         assertTrue(output.contains("15"), "Expected output to contain arithmetic result 15, but got: $output")
     }
+
+    @Test
+    fun `compile test1`() {
+        val examplePath = Paths.get("samples/test1.kt")
+        val program = parseFile(examplePath)
+
+        val compiler = MiniKotlinCompiler()
+        val javaCode = compiler.compile(program)
+
+        val javaFile = tempDir.resolve("MiniProgram.java")
+        Files.writeString(javaFile, javaCode)
+
+        val javaCompiler = JavaRuntimeCompiler()
+        val stdlibPath = resolveStdlibPath()
+        val (compilationResult, executionResult) = javaCompiler.compileAndExecute(javaFile, stdlibPath)
+
+        assertIs<CompilationResult.Success>(compilationResult)
+        assertIs<ExecutionResult.Success>(executionResult)
+
+        val output = executionResult.stdout
+        assertTrue(output.contains("11"), "Expected output to contain factorial result 120, but got: $output")
+        assertTrue(output.contains("high_value"), "Expected output to contain arithmetic result 15, but got: $output")
+
+        assertTrue(output.contains("true"), "Expected output to contain factorial result true, but got: $output")
+        assertTrue(output.contains("1024"), "Expected output to contain arithmetic result 15, but got: $output")
+    }
 }
