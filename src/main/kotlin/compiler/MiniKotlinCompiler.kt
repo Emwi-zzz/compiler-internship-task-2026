@@ -2,6 +2,8 @@ package org.example.compiler
 
 import MiniKotlinBaseVisitor
 import MiniKotlinParser
+import org.example.compiler.visitors.internal.CompilerContext
+import org.example.compiler.visitors.internal.CompilerContextImpl
 import org.example.compiler.visitors.DeclarationVisitor
 import org.example.compiler.visitors.ExpressionVisitor
 import org.example.compiler.visitors.ProgramVisitor
@@ -11,11 +13,11 @@ class MiniKotlinCompiler : MiniKotlinBaseVisitor<String>(),
     ExpressionVisitor,
     DeclarationVisitor,
     ProgramVisitor,
-    StatementVisitor
+    StatementVisitor,
+    CompilerContext by CompilerContextImpl()
 {
     fun compile(program: MiniKotlinParser.ProgramContext, className: String = "MiniProgram"): String {
-
-        val programOutput = visitProgram(program)
+        val programOutput = visit(program)
 
         return """
             public class $className {
@@ -23,6 +25,8 @@ class MiniKotlinCompiler : MiniKotlinBaseVisitor<String>(),
             }
         """.trimIndent()
     }
+
+    // The following methods are just specified where methods of Visitor were overridden
 
     //--------------------
     //      Visitors
@@ -114,6 +118,10 @@ class MiniKotlinCompiler : MiniKotlinBaseVisitor<String>(),
 
     override fun visitFunctionCallExpr(ctx: MiniKotlinParser.FunctionCallExprContext): String {
         return super<ExpressionVisitor>.visitFunctionCallExpr(ctx)
+    }
+
+    override fun visitArgumentList(ctx: MiniKotlinParser.ArgumentListContext): String {
+        return super<ExpressionVisitor>.visitArgumentList(ctx)
     }
 
     override fun visitIdentifierExpr(ctx: MiniKotlinParser.IdentifierExprContext): String {
