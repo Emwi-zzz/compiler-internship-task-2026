@@ -43,9 +43,9 @@ class MiniKotlinCompilerTest {
         return null
     }
 
-    @Test
-    fun `compile example_mini outputs 120 and 15`() {
-        val examplePath = Paths.get("samples/example.mini")
+    private fun getOutput(source: String): String {
+
+        val examplePath = Paths.get(source)
         val program = parseFile(examplePath)
 
         val compiler = MiniKotlinCompiler()
@@ -61,34 +61,35 @@ class MiniKotlinCompilerTest {
         assertIs<CompilationResult.Success>(compilationResult)
         assertIs<ExecutionResult.Success>(executionResult)
 
-        val output = executionResult.stdout
+        return executionResult.stdout
+    }
+
+    @Test
+    fun `compile example_mini outputs 120 and 15`() {
+        val output = getOutput("samples/example.mini")
         assertTrue(output.contains("120"), "Expected output to contain factorial result 120, but got: $output")
         assertTrue(output.contains("15"), "Expected output to contain arithmetic result 15, but got: $output")
     }
 
     @Test
     fun `compile test1`() {
-        val examplePath = Paths.get("samples/test1.kt")
-        val program = parseFile(examplePath)
+        val output = getOutput("samples/tests/test1.kt")
 
-        val compiler = MiniKotlinCompiler()
-        val javaCode = compiler.compile(program)
-
-        val javaFile = tempDir.resolve("MiniProgram.java")
-        Files.writeString(javaFile, javaCode)
-
-        val javaCompiler = JavaRuntimeCompiler()
-        val stdlibPath = resolveStdlibPath()
-        val (compilationResult, executionResult) = javaCompiler.compileAndExecute(javaFile, stdlibPath)
-
-        assertIs<CompilationResult.Success>(compilationResult)
-        assertIs<ExecutionResult.Success>(executionResult)
-
-        val output = executionResult.stdout
         assertTrue(output.contains("11"), "Expected output to contain factorial result 120, but got: $output")
         assertTrue(output.contains("high_value"), "Expected output to contain arithmetic result 15, but got: $output")
 
         assertTrue(output.contains("true"), "Expected output to contain factorial result true, but got: $output")
         assertTrue(output.contains("1024"), "Expected output to contain arithmetic result 15, but got: $output")
     }
+
+    @Test
+    fun `compile test2`() {
+        val output = getOutput("samples/tests/test2.kt")
+
+        assertTrue(output.contains("6"), "Expected output to contain 6, but got: $output")
+        assertTrue(output.contains("25"), "Expected output to contain 25, but got: $output")
+
+        assertTrue(output.contains("36"), "Expected output to contain 36, but got: $output")
+
+        }
 }

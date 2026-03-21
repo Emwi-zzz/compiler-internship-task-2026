@@ -6,7 +6,6 @@ import org.example.compiler.visitors.internal.CompilerContext
 interface BaseCallVisitor : MiniKotlinVisitor<String>, CompilerContext {
 
     fun generateResultName() : String{
-        val funCallCounter = funCallCounter[funCallCounter.lastIndex]
         return "__result$funCallCounter"
     }
     override fun visitFunctionCallExpr(ctx: MiniKotlinParser.FunctionCallExprContext): String {
@@ -24,7 +23,7 @@ interface BaseCallVisitor : MiniKotlinVisitor<String>, CompilerContext {
 
         continuationBuffer.add(functionCall.toString())
 
-        funCallCounter[funCallCounter.lastIndex]++
+        funCallCounter++
 
         return when(ctx.parent){
             is MiniKotlinParser.StatementContext -> ""
