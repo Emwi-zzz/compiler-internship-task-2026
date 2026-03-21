@@ -74,7 +74,8 @@ public static void main(String[] args) {
   });
 }
 ```
-
+var tmp = it.children
+            while(it is MiniKotlinParser.ParenExprContext) tmp = it.expression()
 
 ## Building and Running
 
@@ -95,3 +96,20 @@ public static void main(String[] args) {
 ## Evaluation
 
 The task will be tested on a hidden set of tests.
+
+
+## Additional Features
+
+Ability to use functionCalls as an expression.
+
+Gives the ability to use them directly without assignment to a variable
+
+like:
+```kotlin
+if(isEmtpy()) {
+    exp(2, exp(2, 4))
+}
+```
+And with a few changes can give the ability to pass variables by reference.
+
+Added ability to call functions without an argument list
